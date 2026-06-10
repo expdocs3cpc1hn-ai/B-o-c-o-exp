@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPP Form Generator | CPC1 Hà Nội</title>
+    <meta name="description" content="Hệ thống tự động tạo đơn đề nghị cấp Giấy chứng nhận sản phẩm dược phẩm (CPP) cho các sản phẩm của CPC1 Hà Nội.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400;1,600&family=Courier+Prime&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Dynamic Print Orientation Stylesheet Override -->
+    <style id="print-orientation-style"></style>
+</head>
+<body>
+    <!-- Global Navigation Bar -->
+    <nav class="global-navbar">
+        <div class="navbar-brand">
+            <div class="nav-logo">
+                <i data-lucide="activity" class="nav-logo-icon"></i>
+            </div>
+            <div class="nav-brand-text">
+                <h2>CPC1HN Regulatory</h2>
+                <p>Hệ thống Quản lý & Tạo hồ sơ Xuất khẩu</p>
+            </div>
+        </div>
+        <div class="navbar-tabs">
+            <button class="nav-tab-btn" id="nav-btn-creator">
+                <i data-lucide="file-edit"></i> Tạo hồ sơ CPP & Đơn xin cấp
+            </button>
+            <button class="nav-tab-btn active" id="nav-btn-tracking">
+                <i data-lucide="clipboard-list"></i> Theo dõi tiến độ hồ sơ EXP
+            </button>
+        </div>
+    </nav>
+
+    <div class="main-content-wrapper">
+        <!-- Container for Tab 1: CPP Creator -->
+        <div id="cpp-creator-view" class="app-container hidden">
+            <!-- Control Panel (Left Column) -->
+            <aside class="control-panel" id="ui-control-panel">
+                <header class="app-header">
+                    <div class="brand">
+                        <div class="logo-box">
+                            <i data-lucide="file-text" class="logo-icon"></i>
+                        </div>
+                        <div>
+                            <h1>CPP Generator</h1>
+                            <p class="subtitle">CPC1 HÀ NỘI</p>
+                        </div>
+                    </div>
+                    <div class="sync-status status-loading" id="sync-status">
+                        <span class="status-dot"></span>
+                        <span class="status-text" id="sync-status-text">Đang đồng bộ dữ liệu...</span>
+                    </div>
+                </header>
+    
+                <!-- Settings Accordion -->
+                <section class="panel-section card">
+                    <h2 class="section-title"><i data-lucide="settings"></i> Cấu hình tài liệu</h2>
+                    <div class="settings-grid">
+                        <div class="input-group">
+                            <label for="input-dispatch-no">Số công văn</label>
+                            <div class="dispatch-input-wrapper">
+                                <input type="text" id="input-dispatch-no" placeholder="Số CV" value="125">
+                                <span class="dispatch-suffix">/2026/CV-CPC1HN</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="input-doc-date">Ngày ký đề nghị</label>
+                            <input type="date" id="input-doc-date">
+                        </div>
+                    </div>
+                    <div class="company-details-toggle" id="company-toggle-btn">
+                        <span>Chỉnh sửa thông tin doanh nghiệp</span>
+                        <i data-lucide="chevron-down" class="toggle-icon"></i>
+                    </div>
+                    <div class="company-details-fields hidden" id="company-fields">
+                        <div class="input-group">
+                            <label for="input-comp-name">Tên doanh nghiệp</label>
+                            <input type="text" id="input-comp-name" value="Công ty Cổ phần Dược phẩm CPC1 Hà Nội">
+                        </div>
+                        <div class="input-group">
+                            <label for="input-comp-addr">Địa chỉ</label>
+                            <input type="text" id="input-comp-addr" value="Cụm Công nghiệp Hà Bình Phương, xã Thường Tín, Hà Nội">
+                        </div>
+                        <div class="input-group">
+                            <label for="input-comp-phone">Điện thoại</label>
+                            <input type="text" id="input-comp-phone" value="0243.3765503">
+                        </div>
+                        <div class="input-group">
+                            <label for="input-comp-fax">Fax</label>
+                            <input type="text" id="input-comp-fax" value="0243.33765504">
+                        </div>
+                    </div>
+                </section>
+    
+                <!-- CoPP English Settings Card (Hidden by default, shown when Tab 2 is active) -->
+                <section class="panel-section card hidden" id="copp-settings-card">
+                    <h2 class="section-title"><i data-lucide="globe"></i> Thông tin Giấy chứng nhận (CoPP)</h2>
+                    <div class="input-group">
+                        <label for="input-cpp-product">Sản phẩm đang hiển thị CoPP</label>
+                        <select id="input-cpp-product" style="border-color: #06b6d4; font-weight: 600;">
+                            <!-- Selected products populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="settings-grid" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <div class="input-group">
+                            <label for="input-cpp-no">Số Certificate No</label>
+                            <input type="text" id="input-cpp-no" value="………./GP-QLD">
+                        </div>
+                        <div class="input-group">
+                            <label for="input-cpp-country">Nước nhập khẩu (Importing)</label>
+                            <input type="text" id="input-cpp-country" value="Myanmar">
+                        </div>
+                    </div>
+                    <div class="settings-grid" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <div class="input-group">
+                            <label for="input-cpp-issue-date">Ngày cấp (Issue Date)</label>
+                            <input type="text" id="input-cpp-issue-date" placeholder="DD/MM/YYYY">
+                        </div>
+                        <div class="input-group">
+                            <label for="input-cpp-expiry-date">Ngày hết hạn (Expiry Date)</label>
+                            <input type="text" id="input-cpp-expiry-date" placeholder="DD/MM/YYYY">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="input-cpp-export-name">Tên sản phẩm xuất khẩu (Exporting name)</label>
+                        <input type="text" id="input-cpp-export-name" placeholder="Tên sản phẩm xuất khẩu">
+                    </div>
+                    <div class="input-group">
+                        <label for="input-cpp-dosage-eng">Dạng bào chế tiếng Anh (Dosage form)</label>
+                        <input type="text" id="input-cpp-dosage-eng" placeholder="Ví dụ: Eye drops solution">
+                    </div>
+                    <div class="input-group">
+                        <label for="input-cpp-ingredients-eng">Hoạt chất & nồng độ (Ingredients & Strength)</label>
+                        <textarea id="input-cpp-ingredients-eng" placeholder="Ví dụ: Sodium Hyaluronate 0.3%" style="height: 60px; font-family: inherit; font-size: 0.85rem; padding: 0.5rem; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.2); color: white; border-radius: 8px; resize: none; outline: none;"></textarea>
+                    </div>
+                </section>
+    
+                <!-- Search and Filter -->
+                <section class="panel-section card">
+                    <h2 class="section-title"><i data-lucide="search"></i> Tìm kiếm sản phẩm</h2>
+                    <div class="search-box">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="search-input" placeholder="Tìm tên thuốc, hoạt chất, số đăng ký...">
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="filter-type">Phân loại</label>
+                            <select id="filter-type">
+                                <option value="">Tất cả phân loại</option>
+                                <option value="Thuốc">Thuốc</option>
+                                <option value="Mỹ phẩm">Mỹ phẩm / MP</option>
+                                <option value="TTB">Trang thiết bị y tế</option>
+                                <option value="TPCN">Thực phẩm chức năng</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary btn-small" id="clear-selection-btn">
+                            <i data-lucide="trash-2"></i> Bỏ chọn tất cả (<span id="selected-count-badge">0</span>)
+                        </button>
+                    </div>
+                </section>
+    
+                <!-- Product List Section -->
+                <section class="panel-section product-list-section card flex-1">
+                    <div class="list-header">
+                        <h2>Danh sách sản phẩm (<span id="total-products-count">0</span>)</h2>
+                    </div>
+                    <div class="table-container scrollable">
+                        <table class="product-table" id="product-list-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;">Chọn</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Dạng bào chế</th>
+                                    <th>Số đăng ký</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-list-body">
+                                <!-- Rows dynamically populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+    
+                <!-- Custom Paste Area for Fallback -->
+                <section class="panel-section paste-section card collapsed" id="paste-section-card">
+                    <div class="paste-header" id="paste-toggle-btn">
+                        <span><i data-lucide="clipboard-paste"></i> Nhập dữ liệu thủ công</span>
+                        <i data-lucide="chevron-down" class="toggle-icon"></i>
+                    </div>
+                    <div class="paste-body hidden" id="paste-body-content">
+                        <p class="help-text">Dán mã HTML (thẻ tr) từ Google Sheet để bổ sung/cập nhật sản phẩm tức thì:</p>
+                        <textarea id="manual-html-paste" placeholder="<table><tr>...</tr></table> hoặc các thẻ <tr>...</tr> của sản phẩm..."></textarea>
+                        <button class="btn btn-secondary" id="import-manual-btn">Nhập dữ liệu</button>
+                    </div>
+                </section>
+            </aside>
+    
+            <!-- Preview Panel (Right Column) -->
+            <main class="preview-panel">
+                <header class="preview-header">
+                    <h2><i data-lucide="eye"></i> Xem trước tài liệu (A4)</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="export-docx-btn">
+                            <i data-lucide="file-down"></i> Tải file Word (.doc)
+                        </button>
+                        <button class="btn btn-success" id="print-pdf-btn">
+                            <i data-lucide="printer"></i> Tải file PDF / In
+                        </button>
+                    </div>
+                </header>
+    
+                <!-- Preview Tabs Navigation -->
+                <div class="tabs-container">
+                    <button class="tab-btn active" id="tab-btn-don">
+                        <i data-lucide="file-text"></i> Đơn đề nghị cấp CPP (Tiếng Việt)
+                    </button>
+                    <button class="tab-btn" id="tab-btn-cpp">
+                        <i data-lucide="award"></i> Giấy chứng nhận CPP (CoPP WHO English)
+                    </button>
+                </div>
+    
+                <div class="document-container scrollable">
+                    <!-- A4 Simulated Page -->
+                    <div class="a4-page" id="document-preview">
+                        <!-- Container for Tab 1: Đơn đề nghị cấp CPP (Vietnamese Application) -->
+                        <div id="don-preview-container">
+                            <!-- Header Section: Two Column Layout -->
+                            <table class="doc-header-table">
+                                <tr>
+                                    <td class="col-left">
+                                        <p class="comp-name" id="preview-comp-name">CÔNG TY CỔ PHẦN DƯỢC PHẨM</p>
+                                        <p class="comp-subname">CPC1 HÀ NỘI</p>
+                                        <p class="dispatch-no">Số: <span id="preview-dispatch-no">125</span>/2026/CV-CPC1HN</p>
+                                    </td>
+                                    <td class="col-right">
+                                        <p class="national-title">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
+                                        <p class="national-slogan">Độc lập - Tự do - Hạnh phúc</p>
+                                        <div class="slogan-underline"></div>
+                                    </td>
+                                </tr>
+                            </table>
+    
+                            <!-- Date line -->
+                            <p class="doc-date" id="preview-doc-date">Hà Nội, ngày 09 tháng 06 năm 2026</p>
+    
+                            <!-- Recipient -->
+                            <p class="doc-recipient">Kính gửi: Cục Quản lý dược - Bộ Y tế</p>
+    
+                            <!-- Company details -->
+                            <div class="doc-company-info">
+                                <p><strong>Doanh nghiệp:</strong> <span id="preview-comp-info-name">Công ty Cổ phần Dược phẩm CPC1 Hà Nội</span></p>
+                                <p><strong>Địa chỉ:</strong> <span id="preview-comp-info-addr">Cụm Công nghiệp Hà Bình Phương, xã Thường Tín, Hà Nội</span></p>
+                                <p class="inline-fields">
+                                    <span><strong>Điện thoại:</strong> <span id="preview-comp-info-phone">0243.3765503</span></span>
+                                    <span class="fax-field"><strong>Fax:</strong> <span id="preview-comp-info-fax">0243.33765504</span></span>
+                                </p>
+                            </div>
+    
+                            <!-- Request statement -->
+                            <p class="doc-statement">
+                                Kính đề nghị Cục Quản lý dược- Bộ Y tế xem xét cấp Giấy chứng nhận sản phẩm dược phẩm (CPP) cho sản phẩm sau:
+                            </p>
+    
+                            <!-- Product details table -->
+                            <table class="doc-products-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%;">TT</th>
+                                        <th style="width: 20%;">Tên thuốc</th>
+                                        <th style="width: 25%;">Hoạt chất, thành phần,<br>hàm lượng (nồng độ)</th>
+                                        <th style="width: 25%;">Quy cách đóng gói</th>
+                                        <th style="width: 10%;">Tiêu chuẩn<br>chất lượng</th>
+                                        <th style="width: 8%;">Hạn<br>dùng</th>
+                                        <th style="width: 12%;">Số giấy phép<br>lưu hành</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="preview-table-body">
+                                    <!-- Dynamic preview rows populated by JS -->
+                                    <tr class="empty-placeholder-row">
+                                        <td colspan="7" class="placeholder-text">Chưa chọn sản phẩm nào. Vui lòng chọn sản phẩm ở bảng bên trái để hiển thị tại đây.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+    
+                            <!-- Signature block -->
+                            <div class="doc-signature-block">
+                                <p class="signature-title">ĐẠI DIỆN DOANH NGHIỆP</p>
+                                <p class="signature-subtitle">(Ký tên, ghi họ tên, đóng dấu)</p>
+                            </div>
+                        </div>
+    
+                        <!-- Container for Tab 2: Giấy chứng nhận CPP (English WHO Certificate) -->
+                        <div id="cpp-preview-container" class="hidden">
+                            <!-- WHO CPP layout generated dynamically based on Form Type (Form 1/2/3) -->
+                            <div class="cpp-placeholder-text">Vui lòng chọn sản phẩm để hiển thị Giấy chứng nhận CoPP.</div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div> <!-- End of cpp-creator-view -->
+
+        <!-- Container for Tab 2: EXP Status Tracking Dashboard -->
+        <div id="exp-tracking-view" class="exp-tracking-view">
+            <!-- Top Dashboard Header Card -->
+            <div class="dashboard-header card">
+                <div class="header-brand">
+                    <h2><i data-lucide="bar-chart-2"></i> Báo cáo theo dõi tình trạng hồ sơ EXP</h2>
+                    <p class="dashboard-subtitle">Theo dõi tiến độ GPXK, CPP, FSC và TPCN | Cập nhật tự động</p>
+                </div>
+                <div class="sync-actions">
+                    <button class="btn btn-primary" id="sync-live-exp-btn">
+                        <i data-lucide="refresh-cw"></i> Đồng bộ Live Google Sheets
+                    </button>
+                    <div class="sync-status status-online" id="exp-sync-status" style="margin-left: 10px;">
+                        <span class="status-dot"></span>
+                        <span class="status-text" id="exp-sync-status-text">Bộ nhớ đệm</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metrics grid -->
+            <div class="metrics-grid">
+                <div class="metric-card metric-total" data-filter="all">
+                    <div class="metric-icon"><i data-lucide="folder"></i></div>
+                    <div class="metric-info">
+                        <span class="metric-value" id="stat-total">0</span>
+                        <span class="metric-label">Tổng hồ sơ</span>
+                    </div>
+                </div>
+                <div class="metric-card metric-priority" data-filter="priority">
+                    <div class="metric-icon"><i data-lucide="zap"></i></div>
+                    <div class="metric-info">
+                        <span class="metric-value" id="stat-priority">0</span>
+                        <span class="metric-label">Hồ sơ ưu tiên</span>
+                    </div>
+                </div>
+                <div class="metric-card metric-overdue" data-filter="overdue">
+                    <div class="metric-icon"><i data-lucide="alert-circle"></i></div>
+                    <div class="metric-info">
+                        <span class="metric-value" id="stat-overdue">0</span>
+                        <span class="metric-label">Quá hạn (>1 tháng)</span>
+                    </div>
+                </div>
+                <div class="metric-card metric-pending" data-filter="pending">
+                    <div class="metric-icon"><i data-lucide="clock"></i></div>
+                    <div class="metric-info">
+                        <span class="metric-value" id="stat-pending">0</span>
+                        <span class="metric-label">Đang xử lý</span>
+                    </div>
+                </div>
+                <div class="metric-card metric-completed" data-filter="completed">
+                    <div class="metric-icon"><i data-lucide="check-circle-2"></i></div>
+                    <div class="metric-info">
+                        <span class="metric-value" id="stat-completed">0</span>
+                        <span class="metric-label">Đã hoàn thành</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Sub-Tabs -->
+            <div class="dashboard-tabs-container">
+                <button class="dash-tab-btn active" data-tab="gpxk">
+                    <i data-lucide="shield"></i> Giấy phép xuất khẩu (GPXK)
+                </button>
+                <button class="dash-tab-btn" data-tab="cpp">
+                    <i data-lucide="award"></i> Giấy chứng nhận (CPP)
+                </button>
+                <button class="dash-tab-btn" data-tab="fsc">
+                    <i data-lucide="check-square"></i> Free Sale Certificate (FSC)
+                </button>
+                <button class="dash-tab-btn" data-tab="tpcn">
+                    <i data-lucide="activity"></i> Thực phẩm chức năng (TPCN)
+                </button>
+            </div>
+
+            <!-- Dashboard Filter & Table Card -->
+            <div class="dashboard-content card flex-1">
+                <div class="filter-controls-row">
+                    <div class="search-box tracking-search">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="tracking-search-input" placeholder="Tìm kiếm theo tên thuốc, nước, khách hàng, số GP...">
+                    </div>
+                    
+                    <div class="filter-group-row">
+                        <div class="tracking-filter-group" style="display: none;">
+                            <label for="filter-exp-warning">Trạng thái cảnh báo</label>
+                            <select id="filter-exp-warning">
+                                <option value="all">Tất cả mức độ</option>
+                                <option value="priority">Mức Ưu tiên</option>
+                                <option value="overdue">Quá hạn (>1 tháng)</option>
+                                <option value="pending">Chưa quá hạn (Đang xử lý)</option>
+                                <option value="completed">Đã hoàn thành / Lưu</option>
+                            </select>
+                        </div>
+                        
+                        <div class="tracking-filter-group" style="display: none;">
+                            <label for="filter-exp-archive">Bộ nhớ lưu</label>
+                            <select id="filter-exp-archive">
+                                <option value="all">Tất cả (Đang xử lý + Lưu)</option>
+                                <option value="active">Đang xử lý (Active)</option>
+                                <option value="archived">Đã lưu trữ (Lưu)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scrollable Table Container -->
+                <div class="tracking-table-container scrollable">
+                    <table class="tracking-table" id="tracking-data-table">
+                        <thead>
+                            <tr id="tracking-table-header">
+                                <!-- Populated dynamically by JS -->
+                            </tr>
+                        </thead>
+                        <tbody id="tracking-table-body">
+                            <!-- Populated dynamically by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- End of exp-tracking-view -->
+    </div> <!-- End of main-content-wrapper -->
+
+    <!-- Load fallback data -->
+    <script src="data-fallback.js"></script>
+    <script src="data-exp-fallback.js"></script>
+    <!-- Load main script -->
+    <script src="app.js"></script>
+</body>
+</html>
