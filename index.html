@@ -20,26 +20,18 @@
     <nav class="global-navbar">
         <div class="navbar-brand">
             <div class="nav-logo">
-                <i data-lucide="activity" class="nav-logo-icon"></i>
+                <i data-lucide="file-text" class="nav-logo-icon"></i>
             </div>
             <div class="nav-brand-text">
                 <h2>CPC1HN Regulatory</h2>
-                <p>Hệ thống Quản lý & Tạo hồ sơ Xuất khẩu</p>
+                <p>Hệ thống Tạo CPP &amp; Đơn xin cấp CPP</p>
             </div>
-        </div>
-        <div class="navbar-tabs">
-            <button class="nav-tab-btn" id="nav-btn-creator">
-                <i data-lucide="file-edit"></i> Tạo hồ sơ CPP & Đơn xin cấp
-            </button>
-            <button class="nav-tab-btn active" id="nav-btn-tracking">
-                <i data-lucide="clipboard-list"></i> Theo dõi tiến độ hồ sơ EXP
-            </button>
         </div>
     </nav>
 
     <div class="main-content-wrapper">
         <!-- Container for Tab 1: CPP Creator -->
-        <div id="cpp-creator-view" class="app-container hidden">
+        <div id="cpp-creator-view" class="app-container">
             <!-- Control Panel (Left Column) -->
             <aside class="control-panel" id="ui-control-panel">
                 <header class="app-header">
@@ -305,131 +297,11 @@
             </main>
         </div> <!-- End of cpp-creator-view -->
 
-        <!-- Container for Tab 2: EXP Status Tracking Dashboard -->
-        <div id="exp-tracking-view" class="exp-tracking-view">
-            <!-- Top Dashboard Header Card -->
-            <div class="dashboard-header card">
-                <div class="header-brand">
-                    <h2><i data-lucide="bar-chart-2"></i> Báo cáo theo dõi tình trạng hồ sơ EXP</h2>
-                    <p class="dashboard-subtitle">Theo dõi tiến độ GPXK, CPP, FSC và TPCN | Cập nhật tự động</p>
-                </div>
-                <div class="sync-actions">
-                    <button class="btn btn-primary" id="sync-live-exp-btn">
-                        <i data-lucide="refresh-cw"></i> Đồng bộ Live Google Sheets
-                    </button>
-                    <div class="sync-status status-online" id="exp-sync-status" style="margin-left: 10px;">
-                        <span class="status-dot"></span>
-                        <span class="status-text" id="exp-sync-status-text">Bộ nhớ đệm</span>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Metrics grid -->
-            <div class="metrics-grid">
-                <div class="metric-card metric-total" data-filter="all">
-                    <div class="metric-icon"><i data-lucide="folder"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-value" id="stat-total">0</span>
-                        <span class="metric-label">Tổng hồ sơ</span>
-                    </div>
-                </div>
-                <div class="metric-card metric-priority" data-filter="priority">
-                    <div class="metric-icon"><i data-lucide="zap"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-value" id="stat-priority">0</span>
-                        <span class="metric-label">Hồ sơ ưu tiên</span>
-                    </div>
-                </div>
-                <div class="metric-card metric-overdue" data-filter="overdue">
-                    <div class="metric-icon"><i data-lucide="alert-circle"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-value" id="stat-overdue">0</span>
-                        <span class="metric-label">Quá hạn (>1 tháng)</span>
-                    </div>
-                </div>
-                <div class="metric-card metric-pending" data-filter="pending">
-                    <div class="metric-icon"><i data-lucide="clock"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-value" id="stat-pending">0</span>
-                        <span class="metric-label">Đang xử lý</span>
-                    </div>
-                </div>
-                <div class="metric-card metric-completed" data-filter="completed">
-                    <div class="metric-icon"><i data-lucide="check-circle-2"></i></div>
-                    <div class="metric-info">
-                        <span class="metric-value" id="stat-completed">0</span>
-                        <span class="metric-label">Đã hoàn thành</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dashboard Sub-Tabs -->
-            <div class="dashboard-tabs-container">
-                <button class="dash-tab-btn active" data-tab="gpxk">
-                    <i data-lucide="shield"></i> Giấy phép xuất khẩu (GPXK)
-                </button>
-                <button class="dash-tab-btn" data-tab="cpp">
-                    <i data-lucide="award"></i> Giấy chứng nhận (CPP)
-                </button>
-                <button class="dash-tab-btn" data-tab="fsc">
-                    <i data-lucide="check-square"></i> Free Sale Certificate (FSC)
-                </button>
-                <button class="dash-tab-btn" data-tab="tpcn">
-                    <i data-lucide="activity"></i> Thực phẩm chức năng (TPCN)
-                </button>
-            </div>
-
-            <!-- Dashboard Filter & Table Card -->
-            <div class="dashboard-content card flex-1">
-                <div class="filter-controls-row">
-                    <div class="search-box tracking-search">
-                        <i data-lucide="search" class="search-icon"></i>
-                        <input type="text" id="tracking-search-input" placeholder="Tìm kiếm theo tên thuốc, nước, khách hàng, số GP...">
-                    </div>
-                    
-                    <div class="filter-group-row">
-                        <div class="tracking-filter-group" style="display: none;">
-                            <label for="filter-exp-warning">Trạng thái cảnh báo</label>
-                            <select id="filter-exp-warning">
-                                <option value="all">Tất cả mức độ</option>
-                                <option value="priority">Mức Ưu tiên</option>
-                                <option value="overdue">Quá hạn (>1 tháng)</option>
-                                <option value="pending">Chưa quá hạn (Đang xử lý)</option>
-                                <option value="completed">Đã hoàn thành / Lưu</option>
-                            </select>
-                        </div>
-                        
-                        <div class="tracking-filter-group" style="display: none;">
-                            <label for="filter-exp-archive">Bộ nhớ lưu</label>
-                            <select id="filter-exp-archive">
-                                <option value="all">Tất cả (Đang xử lý + Lưu)</option>
-                                <option value="active">Đang xử lý (Active)</option>
-                                <option value="archived">Đã lưu trữ (Lưu)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Scrollable Table Container -->
-                <div class="tracking-table-container scrollable">
-                    <table class="tracking-table" id="tracking-data-table">
-                        <thead>
-                            <tr id="tracking-table-header">
-                                <!-- Populated dynamically by JS -->
-                            </tr>
-                        </thead>
-                        <tbody id="tracking-table-body">
-                            <!-- Populated dynamically by JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div> <!-- End of exp-tracking-view -->
     </div> <!-- End of main-content-wrapper -->
 
     <!-- Load fallback data -->
     <script src="data-fallback.js"></script>
-    <script src="data-exp-fallback.js"></script>
     <!-- Load main script -->
     <script src="app.js"></script>
 </body>
