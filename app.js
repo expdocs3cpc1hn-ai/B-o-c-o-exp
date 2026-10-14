@@ -82,7 +82,7 @@ const state = {
     // (EXP tracking state removed - feature disabled)
 };
 
-const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1-ZGmTSw81hWD718L6ezbbPWqcl67wmXZyysGCiIeMQE/pubhtml?gid=392765265&single=true';
+const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGaloSmXjm89UYR1o-3tgC6z_CfbUpwd-lnfAXfu64_wYnMVjObXwc5bnuoT7gIpqjvO0cXvpowiAF/pubhtml/sheet?headers=false&gid=392765265';
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
