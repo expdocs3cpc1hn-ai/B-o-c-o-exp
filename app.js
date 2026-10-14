@@ -79,17 +79,10 @@ const state = {
         issueDate: '',
         expiryDate: ''
     },
-    // EXP Tracking State
-    trackingActiveTab: 'gpxk',
-    trackingFilterWarning: 'all',
-    trackingFilterArchive: 'all',
-    trackingSearchQuery: '',
-    trackingActiveMetricFilter: 'all',
-    columnFilters: {},
-    expData: null
+    // (EXP tracking state removed - feature disabled)
 };
 
-const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQGaloSmXjm89UYR1o-3tgC6z_CfbUpwd-lnfAXfu64_wYnMVjObXwc5bnuoT7gIpqjvO0cXvpowiAF/pubhtml/sheet?headers=false&gid=0';
+const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1-ZGmTSw81hWD718L6ezbbPWqcl67wmXZyysGCiIeMQE/pubhtml?gid=392765265&single=true';
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
@@ -116,9 +109,6 @@ async function initApp() {
     setupEventListeners();
     updatePrintOrientationStylesheet();
     await loadProductData();
-    
-    // Initialize EXP Status Tracking Dashboard
-    initExpDashboard();
 }
 
 /**
